@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const dotenv = require('dotenv');
 
 const app = express();
 
@@ -8,6 +9,8 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+dotenv.config({ path: './app/config/config.env' });
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -31,6 +34,7 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/employee.routes")(app);
+require("./app/routes/manager.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

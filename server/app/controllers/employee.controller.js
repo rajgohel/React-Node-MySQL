@@ -1,5 +1,5 @@
 const db = require("../models");
-const Employee = db.employees;
+const Employee = db.employee;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Employees from the database.
