@@ -3,39 +3,40 @@ import Card from 'react-bootstrap/Card';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { InputText } from '../../components/input';
+import ManagerService from '../../services/managerService';
 
 const inputs = [{
     "type": "text",
     "title": "First Name",
-    "name": "FirstName",
+    "name": "firstName",
     "class": "text",
     "placeholder": "Enter first name"
 },
 {
     "type": "text",
     "title": "Last Name",
-    "name": "LasttName",
+    "name": "lastName",
     "class": "text",
     "placeholder": "Enter last name"
 },
 {
     "type": "text",
     "title": "Email",
-    "name": "Email",
+    "name": "email",
     "class": "text",
-    "placeholder": "Enter first name"
+    "placeholder": "Enter email"
 },
 {
     "type": "password",
     "title": "Password",
-    "name": "Password",
+    "name": "password",
     "class": "text",
     "placeholder": "Password"
 },
 {
     "type": "text",
     "title": "Address",
-    "name": "Address",
+    "name": "address",
     "class": "text",
     "placeholder": "Address"
 },
@@ -49,7 +50,7 @@ const inputs = [{
 {
     "type": "text",
     "title": "Company",
-    "name": "Company",
+    "name": "company",
     "class": "text",
     "placeholder": "Company "
 }
@@ -66,9 +67,14 @@ const SignUp = () => {
         setInputState((inputField) => ({ ...inputField, [name]: value }));
     }
     const handleSignIn = (e) => {
-        e.stopPropagation();
-        console.log(inputState);
-        navigate("/signIn", { replace: true });
+        ManagerService.signUp(inputState)
+            .then((res) => {
+                e.stopPropagation();
+                navigate("/signIn", { replace: true });
+            })
+            .catch(e => {
+                console.log(e);
+            });
     }
 
     const list = inputs.map(input => {

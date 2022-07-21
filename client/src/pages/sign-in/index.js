@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import { InputText } from '../../components/input';
 import { useNavigate } from "react-router-dom";
+import ManagerService from '../../services/managerService';
 
 const inputs = [{
     "type": "text",
@@ -31,10 +32,16 @@ const SignIn = () => {
     const handleSignIn = (e) => {
         e.stopPropagation();
         if (inputState.email && inputState.password) {
-            localStorage.setItem("token", "userToken");
-            navigate("/dashboard", { replace: true });
+            ManagerService.login(inputState)
+                .then((res) => {
+                    localStorage.setItem("token", res.data.token);
+                    navigate("/dashboard", { replace: true });
+                })
+                .catch(e => {
+                    console.log(e);
+                });
         }
-        else{
+        else {
             alert("Please enter Email and Password.")
         }
     }

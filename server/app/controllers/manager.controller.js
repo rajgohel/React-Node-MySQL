@@ -53,8 +53,6 @@ exports.create = async (req, res) => {
         company: req.body.company
     };
 
-    console.log(manager)
-
     // Save Manager in the database
     Manager.create(manager)
         .then(data => {

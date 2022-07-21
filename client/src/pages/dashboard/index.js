@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { useSelector, useDispatch } from 'react-redux';
 import { InputText } from '../../components/input';
-import { addEmployee, deleteEmployee, editEmployee } from '../../features/employee/employeeSlice';
+import { addAllEmployees, addEmployee, deleteEmployee, editEmployee } from '../../features/employee/employeeSlice';
+import EmployeeService from '../../services/employeeService';
 
 const empInputs = [{
     "type": "text",
@@ -63,30 +64,47 @@ const DashBoard = () => {
 
     const handleModelClose = () => setShowModel(false);
 
-    const handleClose = () => {
+    // handle model save change click
+    const handleSave = () => {
         setShowModel(false);
         if (isEmpId) {
             let payloadData = {
                 empId: isEmpId,
                 employeeDetail: employee
             }
-            dispatch(editEmployee(payloadData));
-            setIsEmpId(null);
+            EmployeeService.updateEmp(employee).then((updateEmpRes) => {
+                dispatch(editEmployee(payloadData));
+                setIsEmpId(null);
+            }).catch((err) => {
+                console.log(err);
+            });
         }
         else {
-            dispatch(addEmployee(employee));
+            EmployeeService.createEmp(employee).then((addEmpRes) => {
+                let empObj = { ...employee, id: addEmpRes.data.id };
+                dispatch(addEmployee(empObj));
+            }).catch((err) => {
+                console.log(err);
+            });
         }
         setEmployee({});
     }
 
+    // set value in state while user interacts with input.
     const onChange = (name, value) => {
         setEmployee((prevEmployee) => ({ ...prevEmployee, [name]: value }));
     }
 
-    const handleDelete = (index) => {
-        dispatch(deleteEmployee(index));
+    // handle employee delete click.
+    const handleDelete = (employeeData) => {
+        EmployeeService.deleteEmp(employeeData.id).then((deleteEmpRes) => {
+            dispatch(deleteEmployee(employeeData.id));
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
+    // handle employee edit click.
     const handleEdit = (empId) => {
         let loadEmp = employeeData.find((ele) => ele.id === empId);
         setEmployee(loadEmp);
@@ -94,6 +112,7 @@ const DashBoard = () => {
         setIsEmpId(empId);
     }
 
+    // list of inputs for UI binding.
     const list = empInputs.map(input => {
         return (
             <InputText
@@ -108,6 +127,19 @@ const DashBoard = () => {
             />
         );
     });
+
+    // Get all employees from DB while component loads
+    const getAllEmployees = () => {
+        EmployeeService.getAllEmps(employee).then((getAllEmpRes) => {
+            dispatch(addAllEmployees(getAllEmpRes.data));
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    useEffect(() => {
+        getAllEmployees();
+    }, []);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "4rem" }}>
@@ -141,7 +173,7 @@ const DashBoard = () => {
                                 <td>{ele.city}</td>
                                 <td>
                                     <Button variant="primary" size='sm' style={{ marginRight: "4px" }} onClick={() => { handleEdit(ele.id) }}><i className="fa fa-edit"></i></Button>
-                                    <Button variant="danger" size='sm' onClick={() => { handleDelete(index) }}><i className="fa fa-trash"></i></Button>
+                                    <Button variant="danger" size='sm' onClick={() => { handleDelete(ele) }}><i className="fa fa-trash"></i></Button>
                                 </td>
                             </tr>
                         ))}
@@ -160,7 +192,7 @@ const DashBoard = () => {
                         <Button variant="secondary" onClick={handleModelClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={handleClose}>
+                        <Button variant="primary" onClick={handleSave}>
                             Save Changes
                         </Button>
                     </Modal.Footer>

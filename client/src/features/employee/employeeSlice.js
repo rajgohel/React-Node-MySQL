@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import uuid from 'react-uuid';
 
 const initialState = {
     auth: {
@@ -12,8 +11,11 @@ export const employeeSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
+        addAllEmployees: (state, action) => {
+            state.employeeData = [...action.payload];
+        },
         addEmployee: (state, action) => {
-            state.employeeData.push({ ...action.payload, id: uuid() });
+            state.employeeData.push(action.payload);
         },
         editEmployee: (state, action) => {
             state.employeeData = state.employeeData.map((ele) => {
@@ -27,11 +29,11 @@ export const employeeSlice = createSlice({
             })
         },
         deleteEmployee: (state, action) => {
-            state.employeeData = state.employeeData.filter((ele, index) => index !== action.payload);
+            state.employeeData = state.employeeData.filter((ele) => ele.id !== action.payload);
         },
     },
 });
 
-export const { addEmployee, editEmployee, deleteEmployee } = employeeSlice.actions;
+export const { addAllEmployees, addEmployee, editEmployee, deleteEmployee } = employeeSlice.actions;
 
 export default employeeSlice.reducer;
