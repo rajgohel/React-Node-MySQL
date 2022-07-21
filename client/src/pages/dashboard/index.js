@@ -62,7 +62,11 @@ const DashBoard = () => {
 
     const handleAddBtnClick = () => setShowModel(true);
 
-    const handleModelClose = () => setShowModel(false);
+    const handleModelClose = () => {
+        setEmployee({});
+        setShowModel(false);
+        setIsEmpId(null);
+    };
 
     // handle model save change click
     const handleSave = () => {
