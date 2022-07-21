@@ -181,7 +181,7 @@ const DashBoard = () => {
                 </Table>
                 <Modal show={showModel} onHide={handleModelClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Product</Modal.Title>
+                        <Modal.Title>{isEmpId ? 'Edit' : 'Add'} Employee</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form >
