@@ -1,8 +1,10 @@
 # Clone this repo
 
-- ```bash
+- Hit below command.
+
+```bash
   git clone https://github.com/rajgohel/React-Node-MySQL.git
-  ```
+```
 
 # Getting Started with React App (Client)
 
